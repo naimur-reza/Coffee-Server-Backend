@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // middleware
 app.use(cors());
@@ -31,6 +31,8 @@ async function run() {
     await client.connect();
     const database = client.db("coffeeDB").collection("coffee");
     // Send a ping to confirm a successful connection
+
+    // post methods from here ===========
     app.post("/coffee", async (req, res) => {
       const newCoffee = req.body;
       console.log(newCoffee);
@@ -38,6 +40,22 @@ async function run() {
       res.send(result);
     });
 
+    // read method from here
+    app.get("/coffee", async (req, res) => {
+      const cursor = database.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // get singleData
+    app.get("/coffee/:id",async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const coffee = await database.findOne(query)
+      res.send(coffee)
+})
+
+    
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
