@@ -48,14 +48,21 @@ async function run() {
     });
 
     // get singleData
-    app.get("/coffee/:id",async (req, res) => {
-      const id = req.params.id
-      const query = { _id: new ObjectId(id) }
-      const coffee = await database.findOne(query)
-      res.send(coffee)
-})
+    app.get("/coffee/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const coffee = await database.findOne(query);
+      res.send(coffee);
+    });
 
-    
+    // delete method from here
+    app.delete("/coffee/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await database.deleteOne(query);
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
